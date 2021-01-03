@@ -13,9 +13,11 @@ app.use(logger("dev"));
 
 //Route files
 const bootcamps = require("./routes/bootcamps");
+const courses = require("./routes/courses");
 
 //Mounting Routes
 app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
 app.use(errorHandler);
 //Starting Server
 const PORT = process.env.PORT || 5000;
@@ -24,6 +26,7 @@ app.listen(PORT, () => {
     `Server running at ${process.env.NODE_ENV} at PORT No: ${PORT}`.yellow.bold
   );
 });
+
 //handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error: ${err.message}`.red.bold);
