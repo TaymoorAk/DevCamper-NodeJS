@@ -8,12 +8,13 @@ const ErrorResponse = require("../utils/errorResponse");
 //@access PUBLIC
 
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  //pagination
+  // pagination;
   // const page = parseInt(req.query.page, 10) || 1;
   // const limit = parseInt(req.query.limit, 10) || 100;
   // const skip = (page - 1) * limit;
 
-  const query = query.skip(skip).limit(limit);
+  // let query;
+  // query.skip(skip).limit(limit);
   const bootcamp = await Bootcamp.find();
 
   res.status(200).json({
