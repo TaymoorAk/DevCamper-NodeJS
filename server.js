@@ -4,11 +4,13 @@ const app = express();
 const logger = require("morgan");
 const colors = require("colors");
 const errorHandler = require("./middlewares/error");
+const cookieParser = require("cookie-parser");
 //Connection to Database
 const connectDB = require("./config/db");
 connectDB();
 //Middlewares
 app.use(express.json());
+app.use(cookieParser());
 app.use(logger("dev"));
 
 //Route files

@@ -9,12 +9,16 @@ const {
   getBootcampsInRadius,
 } = require("../controllers/bootcamps");
 const router = express.Router();
+const { protect, authorize } = require("../middlewares/auth");
 const courseRouter = require("./courses");
 
 //Resource Routes
 router.use("/:bootcampId/courses", courseRouter);
 
-router.route("/").get(getBootcamps).post(createBootcamps);
+router
+  .route("/")
+  .get(getBootcamps)
+  .post(protect, authorize("admin", "publisher"), createBootcamps);
 router
   .route("/:id")
   .get(getBootcamp)
