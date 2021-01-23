@@ -49,6 +49,17 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 //@access PRIVATE
 
 exports.createBootcamps = asyncHandler(async (req, res, next) => {
+  req.body.user = req.user.id;
+
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
+  if (publishedBootcamp && req.user.role === "admin") {
+    return next(
+      new ErrorResponse(
+        `The user with User Id ${req.user.id} has already published a bootcamp`
+      ),
+      400
+    );
+  }
   const bootcamp = await Bootcamp.create(req.body);
   res.status(201).json({
     success: true,
@@ -60,13 +71,24 @@ exports.createBootcamps = asyncHandler(async (req, res, next) => {
 //@access PRIVATE
 
 exports.updateBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  let bootcamp = await Bootcamp.findById(req.params.id);
   if (!bootcamp) {
     return res.status(400).json({ success: false });
   }
+  console.log(req.user);
+  //Check if user id logged user id matches the user id in bootcamp
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    next(
+      newErrorResponse(
+        `User ${req.user.id} is not authorized to update this Bootcamp`
+      ),
+      401
+    );
+  }
+  bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
   return res.status(200).json({
     success: true,
     data: bootcamp,
@@ -80,6 +102,15 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
   if (!bootcamp) {
     return res.status(400).json({ success: false });
+  }
+  //Check if user id logged user id matches the user id in bootcamp
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    next(
+      newErrorResponse(
+        `User ${req.user.id} is not authorized to delete this Bootcamp`
+      ),
+      401
+    );
   }
   return res.status(200).json({
     success: true,

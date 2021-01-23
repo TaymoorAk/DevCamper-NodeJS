@@ -22,7 +22,7 @@ router
 router
   .route("/:id")
   .get(getBootcamp)
-  .delete(deleteBootcamps)
-  .put(updateBootcamps);
+  .delete(protect, deleteBootcamps)
+  .put(protect, updateBootcamps);
 router.route("/radius/:zipcode/:distance").get(getBootcampsInRadius);
 module.exports = router;

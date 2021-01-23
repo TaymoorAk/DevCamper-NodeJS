@@ -52,10 +52,10 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async (user, statusCode, res) => {
   //Create Token
-  const token = user.getSignedJwtToken();
-
+  const token = await user.getSignedJwtToken();
+  console.log(token);
   const options = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
@@ -65,6 +65,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   if (process.env.NODE_ENV === "production") {
     options.secure = true;
   }
+
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
     token: token,
